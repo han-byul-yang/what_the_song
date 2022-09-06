@@ -4,12 +4,12 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 import { addDoc, collection } from 'firebase/firestore'
 
 import { firebaseAuthService } from 'firebaseContainer/firebaseAuth'
-import { firebaseDB } from 'firebaseContainer/firebaseDB'
+import { firebaseStoreService } from 'firebaseContainer/firebaseStore'
 import { userIdAtom } from 'store/atom'
 
 const Auth = () => {
   const [authData, setAuthData] = useState({ email: '', nickname: '', password: '' })
-  const [newAccount, setNewAccount] = useState(false)
+  const [newAccount, setNewAccount] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
   const userId = useRecoilValue(userIdAtom)
 
@@ -35,7 +35,7 @@ const Auth = () => {
     try {
       if (newAccount) {
         await createUserWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
-        addDoc(collection(firebaseDB, `${userId}`), {
+        addDoc(collection(firebaseStoreService, `${userId}`), {
           nickname: authData.nickname,
         })
       } else await signInWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
@@ -69,7 +69,7 @@ const Auth = () => {
         <input type='submit' />
       </form>
       <button type='button' onClick={handleFormChangeClick}>
-        {newAccount ? '계정이 없으신가요?' : '계정이 이미 있습니다'}
+        {newAccount ? '계정이 이미 있습니다' : '계정이 없으신가요?'}
       </button>
     </>
   )
