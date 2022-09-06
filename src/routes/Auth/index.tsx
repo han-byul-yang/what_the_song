@@ -5,13 +5,13 @@ import { addDoc, collection } from 'firebase/firestore'
 
 import { firebaseAuthService } from 'firebaseContainer/firebaseAuth'
 import { firebaseStoreService } from 'firebaseContainer/firebaseStore'
-import { userIdAtom } from 'store/atom'
+import { userInfoAtom } from 'store/atom'
 
 const Auth = () => {
   const [authData, setAuthData] = useState({ email: '', nickname: '', password: '' })
   const [newAccount, setNewAccount] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
-  const userId = useRecoilValue(userIdAtom)
+  const userInfo = useRecoilValue(userInfoAtom)
 
   const handleAuthChange = (e: FormEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget
@@ -36,7 +36,7 @@ const Auth = () => {
       if (newAccount) {
         await createUserWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
         addDoc(collection(firebaseStoreService, 'userInfo'), {
-          userId,
+          userId: userInfo.userId,
           nickname: authData.nickname,
         })
       } else await signInWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
