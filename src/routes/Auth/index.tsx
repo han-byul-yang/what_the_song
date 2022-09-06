@@ -35,7 +35,8 @@ const Auth = () => {
     try {
       if (newAccount) {
         await createUserWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
-        addDoc(collection(firebaseStoreService, `${userId}`), {
+        addDoc(collection(firebaseStoreService, 'userInfo'), {
+          userId,
           nickname: authData.nickname,
         })
       } else await signInWithEmailAndPassword(firebaseAuthService, authData.email, authData.password)
@@ -58,7 +59,15 @@ const Auth = () => {
           value={authData.email}
           onChange={handleAuthChange}
         />
-        {newAccount && <input type='text' name='nickname' value={authData.nickname} onChange={handleAuthChange} />}
+        {newAccount && (
+          <input
+            type='text'
+            name='nickname'
+            placeholder='닉네임을 입력해주세요'
+            value={authData.nickname}
+            onChange={handleAuthChange}
+          />
+        )}
         <input
           type='password'
           name='password'
